@@ -1,0 +1,242 @@
+# my-prompt-app
+Fresh AI News &amp; Tool Tutorials
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرامپت‌نویس هوش مصنوعی</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: #f7f8fc;
+            background-image: radial-gradient(circle at 1% 1%, #d3e0ff 0%, #f7f8fc 25%);
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .mode-btn.active {
+            background-color: #4f46e5;
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
+        }
+        .mode-btn:not(.active) {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+         .dark .mode-btn:not(.active) {
+            background-color: #374151;
+            color: #d1d5db;
+        }
+        .copy-btn span {
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+        <!-- Header -->
+        <header class="text-center mb-10 fade-in">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-white tracking-tight">پرامپت‌نویس هوشمند</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mt-4 max-w-2xl mx-auto">ایده خود را به زبان فارسی بنویسید، ما آن را به ۳ پرامپت حرفه‌ای برای بهترین مدل‌های هوش مصنوعی تبدیل می‌کنیم.</p>
+        </header>
+
+        <main class="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-xl p-6 md:p-8 border border-gray-200 dark:border-gray-700 fade-in" style="animation-delay: 0.2s;">
+            <!-- Mode Selection -->
+            <div class="mb-6">
+                <label class="block text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300">۱. نوع خروجی را انتخاب کنید:</label>
+                <div id="mode-selector" class="grid grid-cols-2 gap-4">
+                    <button id="image-btn" class="mode-btn active flex items-center justify-center p-4 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 ml-2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                        <span>پرامپت عکس</span>
+                    </button>
+                    <button id="video-btn" class="mode-btn flex items-center justify-center p-4 rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:-translate-y-1">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 ml-2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                        <span>پرامپت ویدیو</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- User Input -->
+            <div class="mb-6">
+                <label for="user-prompt" class="block text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300">۲. ایده خود را اینجا بنویسید:</label>
+                <textarea id="user-prompt" rows="4" class="w-full p-4 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400" placeholder="مثلا: یک جنگل جادویی در شب با قارچ‌های درخشان و یک روباه..."></textarea>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="text-center">
+                <button id="generate-btn" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <span id="btn-text">تولید پرامپت‌ها</span>
+                    <div id="btn-loader" class="hidden">
+                        <svg class="animate-spin h-5 w-5 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </main>
+
+        <!-- Results Section -->
+        <div id="results-section" class="hidden mt-10">
+             <h2 class="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">پرامپت‌های پیشنهادی:</h2>
+             <div id="results-container" class="space-y-4">
+                <!-- Generated prompts will be inserted here -->
+             </div>
+        </div>
+         <!-- Message Box -->
+        <div id="message-box" class="hidden fixed bottom-5 right-5 bg-green-500 text-white py-2 px-4 rounded-lg shadow-xl fade-in z-50">
+            <p id="message-text"></p>
+        </div>
+    </div>
+
+    <script>
+        const imageBtn = document.getElementById('image-btn');
+        const videoBtn = document.getElementById('video-btn');
+        const userPrompt = document.getElementById('user-prompt');
+        const generateBtn = document.getElementById('generate-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnLoader = document.getElementById('btn-loader');
+        const resultsSection = document.getElementById('results-section');
+        const resultsContainer = document.getElementById('results-container');
+        const messageBox = document.getElementById('message-box');
+        const messageText = document.getElementById('message-text');
+
+        let mode = 'image'; // Default mode
+
+        // Function to show a message to the user
+        function showMessage(message, isError = false) {
+            messageText.textContent = message;
+            messageBox.className = `hidden fixed bottom-5 right-5 text-white py-2 px-4 rounded-lg shadow-xl fade-in z-50 ${isError ? 'bg-red-500' : 'bg-green-500'}`;
+            messageBox.classList.remove('hidden');
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 3000); // Hide after 3 seconds
+        }
+        
+        // Mode selection logic
+        function setMode(newMode) {
+             mode = newMode;
+             if (mode === 'image') {
+                 imageBtn.classList.add('active');
+                 videoBtn.classList.remove('active');
+             } else {
+                 videoBtn.classList.add('active');
+                 imageBtn.classList.remove('active');
+             }
+        }
+        imageBtn.addEventListener('click', () => setMode('image'));
+        videoBtn.addEventListener('click', () => setMode('video'));
+
+        // --- UPDATED Generate button click handler ---
+        generateBtn.addEventListener('click', async () => {
+            const userInput = userPrompt.value.trim();
+            if (!userInput) {
+                showMessage('لطفاً ایده خود را در کادر متن وارد کنید.', true);
+                return;
+            }
+
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            generateBtn.disabled = true;
+            generateBtn.classList.add('cursor-not-allowed');
+            resultsSection.classList.add('hidden');
+            
+            // !!! IMPORTANT: This URL must be replaced with your actual Vercel Function URL after deployment !!!
+            const vercelFunctionUrl = 'https://YOUR_PROJECT_NAME.vercel.app/api/generate'; 
+            
+            try {
+                const payload = { userInput: userInput, mode: mode };
+
+                const response = await fetch(vercelFunctionUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error?.message || `خطایی در ارتباط با سرور رخ داد. (کد: ${response.status})`);
+                }
+                
+                let prompts = [];
+                if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0]) {
+                     prompts = JSON.parse(result.candidates[0].content.parts[0].text);
+                } else {
+                     throw new Error("پاسخ نامعتبر از سرور دریافت شد.");
+                }
+
+                displayResults(prompts);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage(error.message, true);
+                resultsContainer.innerHTML = `<p class="text-center text-red-500">${error.message}</p>`;
+                resultsSection.classList.remove('hidden');
+            } finally {
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                generateBtn.disabled = false;
+                generateBtn.classList.remove('cursor-not-allowed');
+            }
+        });
+
+        // Function to display the generated prompts
+        function displayResults(prompts) {
+            resultsContainer.innerHTML = ''; // Clear previous results
+            prompts.forEach((prompt) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 fade-in group';
+                card.style.direction = 'ltr';
+
+                const promptText = document.createElement('p');
+                promptText.className = 'text-gray-700 dark:text-gray-200 mb-4 font-mono text-base leading-relaxed';
+                promptText.textContent = prompt;
+
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-btn absolute top-3 right-3 bg-gray-200/50 dark:bg-gray-700/50 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform hover:scale-110 focus:outline-none';
+                copyButton.title = 'کپی کردن پرامپت';
+                copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-gray-600 dark:text-gray-300"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="sr-only">کپی</span>`;
+                
+                const cardInner = document.createElement('div');
+                cardInner.className = 'relative';
+
+                copyButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const tempTextArea = document.createElement('textarea');
+                    tempTextArea.value = prompt;
+                    document.body.appendChild(tempTextArea);
+                    tempTextArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showMessage('پرامپت با موفقیت کپی شد!');
+                    } catch (err) {
+                        showMessage('خطا در کپی کردن!', true);
+                        console.error('Fallback: Oops, unable to copy', err);
+                    }
+                    document.body.removeChild(tempTextArea);
+                });
+
+                cardInner.appendChild(promptText);
+                cardInner.appendChild(copyButton);
+                card.appendChild(cardInner);
+                resultsContainer.appendChild(card);
+            });
+            resultsSection.classList.remove('hidden');
+        }
+        
+        // Initialize the default mode on page load
+        setMode('image');
+
+    </script>
+</body>
+</html>
